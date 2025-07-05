@@ -14,7 +14,7 @@ class IController{
 };
 
 class BaseComponent{ 
-    // references the controller.
+    // mediator component. the controller.
     protected: // protected: can be accessed by itself and children.
     IController* _controller;
     
@@ -40,6 +40,11 @@ class Armenians: public BaseComponent{
         _controller->Notify(this, "recruit cultists");
     }
 
+    void SharePostOnLinkedin(){
+        std::cout << "Armenia is sharing this post on LinkedIn!";
+        _controller->Notify(this, "armenians reposting");
+    }
+
 };
 
 class Kazakhs: public BaseComponent{
@@ -51,7 +56,7 @@ class Kazakhs: public BaseComponent{
 
     void SharePostOnLinkedIn(){
         std::cout << "Kazakhs are sharing this post on LinkedIn!";
-        _controller->Notify(this, "linkedin resharing");
+        _controller->Notify(this, "kazakhs reposting");
     }
 
     void HostCentralAsianLadiesInitiative(){
@@ -60,26 +65,39 @@ class Kazakhs: public BaseComponent{
     }
 };
 
-class TigranTheThird: public IController{
+class TigranTheController: public IController{
     // a concrete controller.
     private: 
-    Armenians* armenians;
-    Kazakhs* kazakhs;
+    Armenians* armenianCultists;
+    Kazakhs* kazakhCultists;
 
     public:
-    TigranTheThird(Armenians* am, Kazakhs* kz)
-    : armenians(am), kazakhs(kz){
-        armenians->set_controller(this);
-        kazakhs->set_controller(this); // the components allow Tigran to control them.
+    TigranTheController(Armenians* am, Kazakhs* kz)
+    : armenianCultists(am), kazakhCultists(kz){
+        armenianCultists->set_controller(this);
+        kazakhCultists->set_controller(this); // the components allow Tigran to control them.
     } // instantiate army
 
     void Notify(BaseComponent* sender, std::string event) const override{
-        std::cout << "event received:" << event << std::endl;
+        std::cout << "Event received: " << event << std::endl;
         if(event == "hosting reunion"){
-            kazakhs->AttendSlavicReunion();
+            kazakhCultists->AttendSlavicReunion();
         }else if(event == "recruit cultists"){
-            kazakhs->SharePostOnLinkedIn();
+            kazakhCultists->SharePostOnLinkedIn();
+        }else if(event == "hosting CALI"){
+            armenianCultists->SharePostOnLinkedin();
         }
     }
 };
 
+
+// call the above functions
+int main(){
+    Armenians* armenianCultists = new Armenians();
+    Kazakhs* kazakhCultists = new Kazakhs();
+    TigranTheController TigranIII(armenianCultists, kazakhCultists);
+
+    armenianCultists->HostSlavicReunion();
+    kazakhCultists->HostCentralAsianLadiesInitiative();
+
+}
