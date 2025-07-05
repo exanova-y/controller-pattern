@@ -1,4 +1,5 @@
-
+#include <iostream>
+#include <string>
 
 class BaseComponent; // declared before Controller.
 
@@ -24,4 +25,18 @@ class BaseComponent{
     void set_controller(IController* controller){
         _controller = controller;
     }
-}
+};
+
+
+class ArmenianComponent: public BaseComponent{
+    public:
+    void RecruitArmenians(){ // погнали!! Let's go!
+        std::cout << "Armenian is recruiting Armenians successfully!";
+        _controller->Notify(this, "recruiting Armenians");
+    }
+
+    void HostReunion(){
+        std::cout << "Armenian is hosting a slavic reunion successfully!";
+        _controller->Notify(this, "hosting a slavic reunion");
+    }
+};
